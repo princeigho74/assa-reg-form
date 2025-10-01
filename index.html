@@ -116,7 +116,9 @@
                                     <label for="graduationYear">Year of Graduation *</label>
                                     <select id="graduationYear" name="graduationYear" required>
                                         <option value="">Select Year</option>
+                                        <option value="2006">2006</option>
                                     </select>
+                                    <span class="help-text">Only 2006 set members are eligible for registration</span>
                                     <span class="error-text"></span>
                                 </div>
 
@@ -125,6 +127,22 @@
                                     <input type="text" id="occupation" name="occupation" required maxlength="100" placeholder="e.g., Software Engineer, Teacher, Doctor" autocomplete="organization-title">
                                     <span class="error-text"></span>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-section full-width">
+                            <h3><i class="fas fa-file-contract"></i> Terms and Conditions</h3>
+                            
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        I confirm that I am a member of the 2006 graduation set of Afiesere Secondary School and I am responsible for the accuracy of the information provided in this registration form.
+                                    </span>
+                                </label>
+                                <span class="error-text"></span>
                             </div>
                         </div>
                     </div>
