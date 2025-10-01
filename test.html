@@ -1,1 +1,163 @@
-<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>ASSA Registration Test</title>\n    <style>\n        body { font-family: Arial, sans-serif; padding: 20px; }\n        .form-group { margin: 15px 0; }\n        label { display: block; margin-bottom: 5px; font-weight: bold; }\n        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 5px; }\n        .error { border: 2px solid red; }\n        .error-text { color: red; font-size: 12px; }\n        .submit-btn { background: #2196f3; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; }\n        .message { padding: 15px; margin: 10px 0; border-radius: 5px; }\n        .success { background: #e8f5e8; color: #2e7d32; }\n        .error-msg { background: #ffebee; color: #c62828; }\n    </style>\n</head>\n<body>\n    <h1>ASSA Registration Test Form</h1>\n    <form id=\"test-form\">\n        <div class=\"form-group\">\n            <label for=\"surname\">Surname *</label>\n            <input type=\"text\" id=\"surname\" name=\"surname\" required>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"firstName\">First Name *</label>\n            <input type=\"text\" id=\"firstName\" name=\"firstName\" required>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"phoneNumber\">Phone Number *</label>\n            <input type=\"tel\" id=\"phoneNumber\" name=\"phoneNumber\" required placeholder=\"08012345678\">\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"email\">Email *</label>\n            <input type=\"email\" id=\"email\" name=\"email\" required>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"dateOfBirth\">Date of Birth *</label>\n            <input type=\"date\" id=\"dateOfBirth\" name=\"dateOfBirth\" required>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"graduationYear\">Graduation Year *</label>\n            <select id=\"graduationYear\" name=\"graduationYear\" required>\n                <option value=\"\">Select Year</option>\n                <option value=\"2020\">2020</option>\n                <option value=\"2015\">2015</option>\n                <option value=\"2010\">2010</option>\n                <option value=\"2005\">2005</option>\n            </select>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"occupation\">Occupation *</label>\n            <input type=\"text\" id=\"occupation\" name=\"occupation\" required>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <div class=\"form-group\">\n            <label for=\"homeAddress\">Home Address *</label>\n            <textarea id=\"homeAddress\" name=\"homeAddress\" required></textarea>\n            <span class=\"error-text\"></span>\n        </div>\n        \n        <button type=\"submit\" class=\"submit-btn\">Register Now</button>\n    </form>\n    \n    <div id=\"result\"></div>\n    \n    <script>\n        document.getElementById('test-form').addEventListener('submit', async (e) => {\n            e.preventDefault();\n            \n            const formData = new FormData(e.target);\n            const data = {\n                surname: formData.get('surname'),\n                firstName: formData.get('firstName'),\n                phoneNumber: formData.get('phoneNumber'),\n                email: formData.get('email'),\n                dateOfBirth: formData.get('dateOfBirth'),\n                graduationYear: parseInt(formData.get('graduationYear')),\n                occupation: formData.get('occupation'),\n                homeAddress: formData.get('homeAddress')\n            };\n            \n            console.log('Submitting:', data);\n            \n            try {\n                const response = await fetch('/api/register', {\n                    method: 'POST',\n                    headers: { 'Content-Type': 'application/json' },\n                    body: JSON.stringify(data)\n                });\n                \n                const result = await response.json();\n                console.log('Result:', result);\n                \n                const resultDiv = document.getElementById('result');\n                if (result.success) {\n                    resultDiv.innerHTML = `<div class=\"message success\">Success! Member ID: ${result.data.memberId}</div>`;\n                } else {\n                    resultDiv.innerHTML = `<div class=\"message error-msg\">Error: ${result.message}</div>`;\n                }\n            } catch (error) {\n                console.error('Error:', error);\n                document.getElementById('result').innerHTML = `<div class=\"message error-msg\">Network Error: ${error.message}</div>`;\n            }\n        });\n    </script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSA Registration Test - 2006 Set Only</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .error { border: 2px solid red; }
+        .error-text { color: red; font-size: 12px; }
+        .submit-btn { background: #2196f3; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; }
+        .message { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #e8f5e8; color: #2e7d32; border: 1px solid #4caf50; }
+        .error-msg { background: #ffebee; color: #c62828; border: 1px solid #f44336; }
+        .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin: 15px 0; }
+        .checkbox-group input[type="checkbox"] { width: auto; margin: 0; }
+        .checkbox-text { flex: 1; font-size: 14px; line-height: 1.4; }
+        .info-box { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2196f3; }
+    </style>
+</head>
+<body>
+    <h1>ASSA Registration Test Form</h1>
+    <div class="info-box">
+        <strong>2006 Set Registration Only:</strong> This form is exclusively for members of the 2006 graduation set of Afiesere Secondary School.
+    </div>
+    
+    <form id="test-form">
+        <div class="form-group">
+            <label for="surname">Surname *</label>
+            <input type="text" id="surname" name="surname" required>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName" name="middleName">
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number *</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="08012345678 or +2348012345678">
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="dateOfBirth">Date of Birth *</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="graduationYear">Graduation Year *</label>
+            <select id="graduationYear" name="graduationYear" required>
+                <option value="">Select Year</option>
+                <option value="2006">2006</option>
+            </select>
+            <small>Only 2006 set members are eligible</small>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="occupation">Occupation *</label>
+            <input type="text" id="occupation" name="occupation" required placeholder="e.g., Teacher, Engineer, Doctor">
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="homeAddress">Home Address *</label>
+            <textarea id="homeAddress" name="homeAddress" required rows="3" placeholder="Enter your complete home address"></textarea>
+            <span class="error-text"></span>
+        </div>
+        
+        <div class="form-group">
+            <div class="checkbox-group">
+                <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+                <label for="termsAccepted" class="checkbox-text">
+                    I confirm that I am a member of the 2006 graduation set of Afiesere Secondary School and I am responsible for the accuracy of the information provided in this registration form.
+                </label>
+            </div>
+            <span class="error-text"></span>
+        </div>
+        
+        <button type="submit" class="submit-btn">Register Now</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('test-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                surname: formData.get('surname'),
+                firstName: formData.get('firstName'),
+                middleName: formData.get('middleName') || '',
+                phoneNumber: formData.get('phoneNumber'),
+                email: formData.get('email'),
+                dateOfBirth: formData.get('dateOfBirth'),
+                graduationYear: parseInt(formData.get('graduationYear')),
+                occupation: formData.get('occupation'),
+                homeAddress: formData.get('homeAddress'),
+                termsAccepted: formData.get('termsAccepted') === 'on'
+            };
+            
+            console.log('Submitting:', data);
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                console.log('Result:', result);
+                
+                const resultDiv = document.getElementById('result');
+                if (result.success) {
+                    resultDiv.innerHTML = `<div class="message success">
+                        <strong>Registration Successful!</strong><br>
+                        Welcome ${result.data.fullName}!<br>
+                        Member ID: ${result.data.memberId}<br>
+                        2006 Set Membership Confirmed
+                    </div>`;
+                    document.getElementById('test-form').reset();
+                } else {
+                    let errorMsg = result.message;
+                    if (result.errors && result.errors.length > 0) {
+                        errorMsg = result.errors.map(err => err.msg || err.message).join('<br>');
+                    }
+                    resultDiv.innerHTML = `<div class="message error-msg">
+                        <strong>Registration Failed:</strong><br>
+                        ${errorMsg}
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `<div class="message error-msg">
+                    <strong>Network Error:</strong><br>
+                    ${error.message}
+                </div>`;
+            }
+        });
+    </script>
+</body>
+</html>
