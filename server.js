@@ -35,7 +35,7 @@ const registrationValidation = [
   body('surname').notEmpty().trim().isLength({ min: 2, max: 50 }).withMessage('Surname must be between 2-50 characters'),
   body('firstName').notEmpty().trim().isLength({ min: 2, max: 50 }).withMessage('First name must be between 2-50 characters'),
   body('middleName').optional().trim().isLength({ max: 50 }).withMessage('Middle name must be less than 50 characters'),
-  body('phoneNumber').isMobilePhone().withMessage('Please enter a valid phone number'),
+  body('phoneNumber').matches(/^(\+234|234|0)?[789][01]\d{8}$/).withMessage('Please enter a valid Nigerian phone number'),
   body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address'),
   body('dateOfBirth').isISO8601().toDate().withMessage('Please enter a valid date of birth'),
   body('graduationYear').isInt({ min: 1960, max: new Date().getFullYear() }).withMessage('Please enter a valid graduation year'),
