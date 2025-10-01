@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSA Registration - Afiesere Secondary School Old Students Association</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="header-text">
+                    <h1>ASSA Registration</h1>
+                    <p>Afiesere Secondary School Old Students Association</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Join Our Alumni Network</h2>
+                    <p>Connect with fellow alumni and stay updated with school activities</p>
+                </div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="message success-message" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h3>Registration Successful!</h3>
+                        <p id="success-details"></p>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="message error-message" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <h3>Registration Failed</h3>
+                        <p id="error-details"></p>
+                    </div>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="registration-form" class="registration-form">
+                    <div class="form-grid">
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-user"></i> Personal Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="surname">Surname *</label>
+                                <input type="text" id="surname" name="surname" required maxlength="50">
+                                <span class="error-text"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required maxlength="50">
+                                <span class="error-text"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="middleName">Middle Name</label>
+                                <input type="text" id="middleName" name="middleName" maxlength="50">
+                                <span class="error-text"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dateOfBirth">Date of Birth *</label>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                                <span class="error-text"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-address-book"></i> Contact Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number *</label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="+2349020779297">
+                                <span class="error-text"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                                <span class="error-text"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="homeAddress">Home Address *</label>
+                                <textarea id="homeAddress" name="homeAddress" rows="3" required maxlength="200" placeholder="Enter your complete home address"></textarea>
+                                <span class="error-text"></span>
+                            </div>
+                        </div>
+
+                        <!-- Academic & Professional Information -->
+                        <div class="form-section full-width">
+                            <h3><i class="fas fa-briefcase"></i> Academic & Professional Information</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="graduationYear">Year of Graduation *</label>
+                                    <select id="graduationYear" name="graduationYear" required>
+                                        <option value="">Select Year</option>
+                                    </select>
+                                    <span class="error-text"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="occupation">Current Occupation *</label>
+                                    <input type="text" id="occupation" name="occupation" required maxlength="100" placeholder="e.g., Software Engineer, Teacher, Doctor">
+                                    <span class="error-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn" id="submit-btn">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Register Now</span>
+                            <div class="spinner" style="display: none;"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Afiesere Secondary School Old Students Association. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your registration...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
