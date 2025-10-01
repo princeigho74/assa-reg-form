@@ -73,8 +73,8 @@ class AssaRegistration {
             },
             phoneNumber: {
                 required: true,
-                pattern: /^\+?[1-9]\d{1,14}$/,
-                message: 'Please enter a valid phone number'
+                pattern: /^(\+234|234|0)?[789][01]\d{8}$/,
+                message: 'Please enter a valid Nigerian phone number (e.g., 08012345678, +2348012345678)'
             },
             email: {
                 required: true,
@@ -229,29 +229,55 @@ class AssaRegistration {
         return labels[fieldName] || fieldName;
     }
 
+    cleanPhoneNumber(phoneInput) {
+        // Remove all non-digits
+        let cleaned = phoneInput.replace(/\D/g, '');
+        
+        // Handle different Nigerian phone formats
+        if (cleaned.startsWith('0') && cleaned.length === 11) {
+            // Convert 08012345678 to 2348012345678
+            return '234' + cleaned.substring(1);
+        } else if (cleaned.startsWith('234') && cleaned.length === 13) {
+            // Already in correct international format
+            return cleaned;
+        } else if (cleaned.length === 10 && (cleaned.startsWith('7') || cleaned.startsWith('8') || cleaned.startsWith('9'))) {
+            // Add country code: 8012345678 to 2348012345678
+            return '234' + cleaned;
+        }
+        
+        // Return as-is if format is unclear (will be caught by validation)
+        return cleaned;
+    }
+
     formatPhoneNumber(e) {
         let value = e.target.value.replace(/\D/g, '');
         
-        // Add country code if not present
-        if (value.length > 0 && !value.startsWith('234')) {
-            if (value.startsWith('0')) {
+        // Handle different Nigerian phone number formats
+        if (value.length > 0) {
+            // Remove leading zeros for processing
+            if (value.startsWith('0') && value.length === 11) {
+                // Nigerian format: 08012345678 -> 2348012345678
                 value = '234' + value.substring(1);
-            } else if (value.length === 10) {
+            } else if (value.startsWith('234') && value.length === 13) {
+                // Already in international format
+                value = value;
+            } else if (value.length === 10 && (value.startsWith('7') || value.startsWith('8') || value.startsWith('9'))) {
+                // Missing country code: 8012345678 -> 2348012345678
                 value = '234' + value;
             }
+            
+            // Format display: +234 XXX XXX XXXX
+            if (value.startsWith('234') && value.length >= 6) {
+                let formatted = '+234';
+                if (value.length > 3) formatted += ' ' + value.substring(3, 6);
+                if (value.length > 6) formatted += ' ' + value.substring(6, 9);
+                if (value.length > 9) formatted += ' ' + value.substring(9, 13);
+                e.target.value = formatted;
+            } else {
+                // For partial input, just add + prefix
+                e.target.value = value.length > 0 ? '+' + value : value;
+            }
         }
-        
-        // Format: +234 XXX XXX XXXX
-        if (value.length > 3) {
-            value = '+' + value.substring(0, 3) + ' ' + 
-                   value.substring(3, 6) + ' ' + 
-                   value.substring(6, 9) + ' ' + 
-                   value.substring(9, 13);
-        } else if (value.length > 0) {
-            value = '+' + value;
-        }
-        
-        e.target.value = value;
     }
 
     validateEmail(e) {
@@ -286,7 +312,7 @@ class AssaRegistration {
                 surname: formData.get('surname').trim(),
                 firstName: formData.get('firstName').trim(),
                 middleName: formData.get('middleName').trim() || null,
-                phoneNumber: formData.get('phoneNumber').replace(/\s/g, ''),
+                phoneNumber: this.cleanPhoneNumber(formData.get('phoneNumber')),
                 email: formData.get('email').trim().toLowerCase(),
                 dateOfBirth: formData.get('dateOfBirth'),
                 graduationYear: parseInt(formData.get('graduationYear')),
