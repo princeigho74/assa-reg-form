@@ -253,88 +253,84 @@ class AssaRegistration {
     }
 
     async handleSubmit(e) {
-        e.preventDefault();
-        
-        console.log('Form submitted');
-        
-        // Hide previous messages
-        this.hideMessages();
-        
-        // Validate form
-        if (!this.validateForm()) {
-            this.showError('Please correct the errors above and try again.');
-            return;
-        }
-
-        // Show loading state
-        this.setLoadingState(true);
-
-        try {
-            const formData = new FormData(this.form);
-            const registrationData = {
-                surname: formData.get('surname').trim(),
-                firstName: formData.get('firstName').trim(),
-                middleName: formData.get('middleName').trim() || '',
-                phoneNumber: formData.get('phoneNumber').trim(),
-                email: formData.get('email').trim().toLowerCase(),
-                dateOfBirth: formData.get('dateOfBirth'),
-                graduationYear: parseInt(formData.get('graduationYear')),
-                occupation: formData.get('occupation').trim(),
-                homeAddress: formData.get('homeAddress').trim(),
-                termsAccepted: formData.get('termsAccepted') === 'on',
-                photograph: this.photoData || null  // Include photo data if available
-            };
-
-            console.log('Submitting data:', registrationData);
-            console.log('Using Google Apps Script URL:', this.webAppUrl);
-
-            const response = await fetch(this.webAppUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(registrationData)
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-            
-            // Google Apps Script always returns 200, check the actual response
-            const result = await response.json();
-            console.log('Response data:', result);
-
-            if (result.success) {
-                this.showSuccess(
-                    `🎉 Welcome to ASSA, ${result.data.fullName}! Your member ID is: ${result.data.memberId}. Thank you for confirming your 2006 set membership and responsibility. Your registration has been saved to Google Sheets.`
-                );
-                this.form.reset();
-                this.successMessage.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Handle errors
-                let errorMsg = result.message || 'Registration failed';
-                if (result.errors && result.errors.length > 0) {
-                    errorMsg = result.errors.map(err => err.message || err.msg).join(', ');
-                }
-                throw new Error(errorMsg);
-            }
-
-        } catch (error) {
-            console.error('Registration error:', error);
-            
-            let errorMessage = error.message;
-            
-            // Provide helpful error messages for common issues
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                errorMessage = `❌ Cannot connect to Google Apps Script. Please check:\n• Is your Web App URL correct?\n• Is the Apps Script deployed with "Anyone" access?\n• Try the test page: /google-test.html`;
-            } else if (error.message.includes('CORS')) {
-                errorMessage = `❌ Cross-origin issue. Make sure your Google Apps Script is deployed with "Anyone" access permission.`;
-            }
-            
-            this.showError(errorMessage);
-        } finally {
-            this.setLoadingState(false);
-        }
+    e.preventDefault();
+    
+    console.log('Form submitted');
+    
+    // Hide previous messages
+    this.hideMessages();
+    
+    // Validate form
+    if (!this.validateForm()) {
+        this.showError('Please correct the errors above and try again.');
+        return;
     }
+
+    // Show loading state
+    this.setLoadingState(true);
+
+    try {
+        const formData = new FormData(this.form);
+        const registrationData = {
+            surname: formData.get('surname').trim(),
+            firstName: formData.get('firstName').trim(),
+            middleName: formData.get('middleName').trim() || '',
+            phoneNumber: formData.get('phoneNumber').trim(),
+            email: formData.get('email').trim().toLowerCase(),
+            dateOfBirth: formData.get('dateOfBirth'),
+            graduationYear: parseInt(formData.get('graduationYear')),
+            occupation: formData.get('occupation').trim(),
+            homeAddress: formData.get('homeAddress').trim(),
+            termsAccepted: formData.get('termsAccepted') === 'on',
+            photograph: this.photoData || null
+        };
+
+        console.log('Submitting data:', registrationData);
+        console.log('Using Google Apps Script URL:', this.webAppUrl);
+
+        const response = await fetch(this.webAppUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registrationData)
+        });
+
+        const result = await response.json();
+        console.log('Response data:', result);
+
+        // ✅ Check for "status" instead of "success"
+        if (result.status === 'success') {
+            // ✅ Build full name safely
+            const fullName = `${result.data.surname} ${result.data.firstName} ${result.data.middleName || ''}`.trim();
+
+            this.showSuccess(
+                `🎉 Welcome to ASSA, ${fullName}! Thank you for confirming your 2006 set membership and responsibility. Your registration has been saved to Google Sheets.`
+            );
+
+            this.form.reset();
+            this.successMessage.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            let errorMsg = result.message || 'Registration failed';
+            if (result.errors && result.errors.length > 0) {
+                errorMsg = result.errors.map(err => err.message || err.msg).join(', ');
+            }
+            throw new Error(errorMsg);
+        }
+
+    } catch (error) {
+        console.error('Registration error:', error);
+
+        let errorMessage = error.message;
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMessage = `❌ Cannot connect to Google Apps Script. Please check:\n• Is your Web App URL correct?\n• Is the Apps Script deployed with "Anyone" access?\n• Try the test page: /google-test.html`;
+        } else if (error.message.includes('CORS')) {
+            errorMessage = `❌ Cross-origin issue. Make sure your Google Apps Script is deployed with "Anyone" access permission.`;
+        }
+        
+        this.showError(errorMessage);
+    } finally {
+        this.setLoadingState(false);
+    }
+}
 
     setLoadingState(loading) {
         const submitBtn = this.submitBtn;
