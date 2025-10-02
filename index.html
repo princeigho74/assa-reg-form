@@ -34,7 +34,7 @@
                 </div>
 
                 <!-- Success Message -->
-                <div id="success-message" class="message success-message" style="display: none;">
+                <div id="success-message" class="message success-message">
                     <i class="fas fa-check-circle"></i>
                     <div>
                         <h3>Registration Successful!</h3>
@@ -43,7 +43,7 @@
                 </div>
 
                 <!-- Error Message -->
-                <div id="error-message" class="message error-message" style="display: none;">
+                <div id="error-message" class="message error-message">
                     <i class="fas fa-exclamation-circle"></i>
                     <div>
                         <h3>Registration Failed</h3>
@@ -130,6 +130,22 @@
                             </div>
                         </div>
 
+                        <!-- Photo Upload Section -->
+                        <div class="form-section full-width">
+                            <h3><i class="fas fa-camera"></i> Upload Photograph</h3>
+                            <div class="form-group file-upload-container">
+                                <div class="file-upload-display">
+                                    <div class="file-upload-placeholder">Click or drag photo here</div>
+                                    <div class="file-upload-preview">
+                                        <img id="photo-preview" src="" alt="Preview">
+                                        <button type="button" onclick="removePhoto()">Remove</button>
+                                    </div>
+                                </div>
+                                <input type="file" id="photograph" name="photograph" accept="image/*" hidden>
+                                <span class="error-text"></span>
+                            </div>
+                        </div>
+
                         <!-- Terms and Conditions -->
                         <div class="form-section full-width">
                             <h3><i class="fas fa-file-contract"></i> Terms and Conditions</h3>
@@ -182,13 +198,14 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div id="loading-overlay" class="loading-overlay">
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <p>Processing your registration...</p>
         </div>
     </div>
 
+    <!-- Google Apps Script Frontend Logic -->
     <script src="script-google.js"></script>
 </body>
 </html>
