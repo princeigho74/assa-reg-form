@@ -1,0 +1,186 @@
+/**
+ * Simple HTML form for testing Google Apps Script backend
+ * Use this to test your setup before using the full form
+ */
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ASSA Registration - Google Apps Script Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #2196f3; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; }
+        .message { padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .success { background: #e8f5e8; color: #2e7d32; border: 1px solid #4caf50; }
+        .error { background: #ffebee; color: #c62828; border: 1px solid #f44336; }
+        .config { background: #fff3e0; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>🧪 ASSA Registration - Google Apps Script Test</h1>
+    
+    <div class="config">
+        <h3>📝 Setup Instructions:</h3>
+        <ol>
+            <li><strong>Create Google Sheet</strong> and copy its ID</li>
+            <li><strong>Create Google Apps Script</strong> and paste the provided code</li>
+            <li><strong>Update SHEET_ID</strong> in the script</li>
+            <li><strong>Deploy as Web App</strong> and copy the URL</li>
+            <li><strong>Paste the Web App URL below</strong> and test</li>
+        </ol>
+    </div>
+
+    <div class="form-group">
+        <label>🔗 Google Apps Script Web App URL:</label>
+        <input type="url" id="webAppUrl" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" required>
+        <small>Get this URL when you deploy your Google Apps Script as a Web App</small>
+    </div>
+
+    <form id="testForm">
+        <div class="form-group">
+            <label>Surname *</label>
+            <input type="text" name="surname" value="TestUser" required>
+        </div>
+        
+        <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" name="firstName" value="Google" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" name="middleName" value="Script">
+        </div>
+        
+        <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" name="phoneNumber" value="08012345678" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="email" value="test@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" name="dateOfBirth" value="1990-01-01" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Graduation Year *</label>
+            <select name="graduationYear" required>
+                <option value="2006" selected>2006</option>
+            </select>
+            <small>Only 2006 set members allowed</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Occupation *</label>
+            <input type="text" name="occupation" value="Software Engineer" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Home Address *</label>
+            <textarea name="homeAddress" required>123 Test Street, Test City, Test State</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="termsAccepted" checked required>
+                I confirm that I am a member of the 2006 graduation set and responsible for this information
+            </label>
+        </div>
+        
+        <button type="submit">🧪 Test Registration</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const webAppUrl = document.getElementById('webAppUrl').value;
+            if (!webAppUrl) {
+                alert('Please enter your Google Apps Script Web App URL first!');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="message">⏳ Testing registration...</div>';
+            
+            const formData = new FormData(e.target);
+            const data = {
+                surname: formData.get('surname'),
+                firstName: formData.get('firstName'),
+                middleName: formData.get('middleName'),
+                phoneNumber: formData.get('phoneNumber'),
+                email: formData.get('email'),
+                dateOfBirth: formData.get('dateOfBirth'),
+                graduationYear: parseInt(formData.get('graduationYear')),
+                occupation: formData.get('occupation'),
+                homeAddress: formData.get('homeAddress'),
+                termsAccepted: formData.get('termsAccepted') === 'on'
+            };
+            
+            console.log('Testing with data:', data);
+            
+            try {
+                const response = await fetch(webAppUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="message success">
+                            <h3>✅ Success!</h3>
+                            <p><strong>Member ID:</strong> ${result.data.memberId}</p>
+                            <p><strong>Name:</strong> ${result.data.fullName}</p>
+                            <p>Google Apps Script backend is working correctly!</p>
+                            <p>Check your Google Sheet for the new registration.</p>
+                        </div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="message error">
+                            <h3>❌ Registration Failed</h3>
+                            <p><strong>Error:</strong> ${result.message}</p>
+                            ${result.errors ? '<p><strong>Details:</strong> ' + result.errors.map(e => e.message).join(', ') + '</p>' : ''}
+                        </div>`;
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="message error">
+                        <h3>❌ Connection Error</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Make sure your Google Apps Script is deployed as a Web App with "Anyone" access.</p>
+                    </div>`;
+            }
+        });
+        
+        // Auto-save and load the Web App URL
+        const urlInput = document.getElementById('webAppUrl');
+        urlInput.addEventListener('input', () => {
+            localStorage.setItem('assaWebAppUrl', urlInput.value);
+        });
+        
+        // Load saved URL
+        const savedUrl = localStorage.getItem('assaWebAppUrl');
+        if (savedUrl) {
+            urlInput.value = savedUrl;
+        }
+    </script>
+</body>
+</html>
