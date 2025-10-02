@@ -12,7 +12,7 @@ class AssaRegistration {
         this.loadingOverlay = document.getElementById('loading-overlay');
 
         // Google Apps Script Web App URL
-        this.webAppUrl = 'https://script.google.com/macros/s/AKfycbxN-tg25Dbhd3vtqxFNHh4dwPtKRj1SJVw_xZcLj3SI_MsCZjjs6BHVTy3rKCmDs6nSjQ/exec';
+        this.webAppUrl = 'https://script.google.com/macros/s/AKfycbwBrtBWxNfKnQoLhpcRFpR8g1feiLU33CZreBYWHOf1zzGjEp_HOE9JCLtskXgaxayJkA/exec';
 
         // Initialize photo data storage
         this.photoData = null;
