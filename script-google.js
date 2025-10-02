@@ -12,7 +12,10 @@ class AssaRegistration {
         this.loadingOverlay = document.getElementById('loading-overlay');
         
         // Google Apps Script Web App URL - directly integrated
-        this.webAppUrl = 'https://script.google.com/macros/s/AKfycbzKkFobH2pdt03Y5Ry74j5w82OtyArZZaoYhHu5l8tNQ2xHNm9FSySMNW-FRyzT0Ukx_g/exec';
+        this.webAppUrl = 'https://script.google.com/macros/s/AKfycbwA8PVG0yHpXQDck7K01Auv2hA-7p3IA1FMxBlVO5fNgv6DZOQ4aqSLuP2ukpHlBqf5pA/exec';
+        
+        // Initialize photo data storage
+        this.photoData = null;
         
         this.init();
     }
@@ -35,6 +38,102 @@ class AssaRegistration {
         // Simple phone formatting
         const phoneInput = document.getElementById('phoneNumber');
         phoneInput.addEventListener('input', (e) => this.formatPhoneNumber(e));
+
+        // Photo upload handling
+        this.setupPhotoUpload();
+    }
+
+    setupPhotoUpload() {
+        const photoInput = document.getElementById('photograph');
+        const uploadDisplay = photoInput.closest('.file-upload-container').querySelector('.file-upload-display');
+        const placeholder = uploadDisplay.querySelector('.file-upload-placeholder');
+        const preview = uploadDisplay.querySelector('.file-upload-preview');
+        const previewImg = document.getElementById('photo-preview');
+
+        // Click to upload
+        uploadDisplay.addEventListener('click', () => {
+            photoInput.click();
+        });
+
+        // File selection
+        photoInput.addEventListener('change', (e) => {
+            this.handlePhotoSelection(e.target.files[0]);
+        });
+
+        // Drag and drop
+        uploadDisplay.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadDisplay.classList.add('dragover');
+        });
+
+        uploadDisplay.addEventListener('dragleave', () => {
+            uploadDisplay.classList.remove('dragover');
+        });
+
+        uploadDisplay.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadDisplay.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.handlePhotoSelection(files[0]);
+            }
+        });
+    }
+
+    handlePhotoSelection(file) {
+        const uploadDisplay = document.querySelector('.file-upload-display');
+        const placeholder = uploadDisplay.querySelector('.file-upload-placeholder');
+        const preview = uploadDisplay.querySelector('.file-upload-preview');
+        const previewImg = document.getElementById('photo-preview');
+        const photoInput = document.getElementById('photograph');
+
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            this.showFieldError(photoInput, 'Please select a valid image file (JPG, PNG, GIF)');
+            return;
+        }
+
+        // Validate file size (2MB limit)
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        if (file.size > maxSize) {
+            this.showFieldError(photoInput, 'Photo file size must be less than 2MB');
+            return;
+        }
+
+        // Clear any previous errors
+        this.clearFieldError(photoInput);
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            placeholder.style.display = 'none';
+            preview.style.display = 'flex';
+            
+            // Store the base64 data for later submission
+            this.photoData = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    removePhoto() {
+        const uploadDisplay = document.querySelector('.file-upload-display');
+        const placeholder = uploadDisplay.querySelector('.file-upload-placeholder');
+        const preview = uploadDisplay.querySelector('.file-upload-preview');
+        const photoInput = document.getElementById('photograph');
+
+        // Reset display
+        placeholder.style.display = 'flex';
+        preview.style.display = 'none';
+        
+        // Clear input and stored data
+        photoInput.value = '';
+        this.photoData = null;
+        
+        // Clear any errors
+        this.clearFieldError(photoInput);
     }
 
     // SIMPLIFIED phone validation - just check if it's a number with 10+ digits
@@ -182,7 +281,8 @@ class AssaRegistration {
                 graduationYear: parseInt(formData.get('graduationYear')),
                 occupation: formData.get('occupation').trim(),
                 homeAddress: formData.get('homeAddress').trim(),
-                termsAccepted: formData.get('termsAccepted') === 'on'
+                termsAccepted: formData.get('termsAccepted') === 'on',
+                photograph: this.photoData || null  // Include photo data if available
             };
 
             console.log('Submitting data:', registrationData);
@@ -277,6 +377,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing ASSA Registration (Google Apps Script version)');
     window.assaApp = new AssaRegistration();
 });
+
+// Global function for removing photo (called from HTML)
+function removePhoto() {
+    if (window.assaApp) {
+        window.assaApp.removePhoto();
+    }
+}
 
 // Global error handling
 window.addEventListener('error', (event) => {
