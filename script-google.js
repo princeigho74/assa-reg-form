@@ -11,74 +11,15 @@ class AssaRegistration {
         this.errorMessage = document.getElementById('error-message');
         this.loadingOverlay = document.getElementById('loading-overlay');
         
-        // Google Apps Script Web App URL (will be configured by user)
-        this.webAppUrl = localStorage.getItem('assaWebAppUrl') || '';
+        // Google Apps Script Web App URL - directly integrated
+        this.webAppUrl = 'https://script.google.com/macros/s/AKfycbzKkFobH2pdt03Y5Ry74j5w82OtyArZZaoYhHu5l8tNQ2xHNm9FSySMNW-FRyzT0Ukx_g/exec';
         
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.checkWebAppConfiguration();
-    }
-
-    checkWebAppConfiguration() {
-        if (!this.webAppUrl) {
-            this.showConfigurationPrompt();
-        }
-    }
-
-    showConfigurationPrompt() {
-        const configPrompt = document.createElement('div');
-        configPrompt.className = 'config-prompt';
-        configPrompt.innerHTML = `
-            <div style="background: #fff3e0; border: 1px solid #ff9800; padding: 20px; margin: 20px; border-radius: 8px;">
-                <h3 style="color: #ef6c00; margin-top: 0;">⚙️ Configuration Required</h3>
-                <p>Please enter your Google Apps Script Web App URL:</p>
-                <div style="display: flex; gap: 10px; margin: 15px 0;">
-                    <input type="url" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/AKfycbzKkFobH2pdt03Y5Ry74j5w82OtyArZZaoYhHu5l8tNQ2xHNm9FSySMNW-FRyzT0Ukx_g/exec" 
-                           style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                    <button onclick="window.assaApp.saveWebAppUrl()" 
-                            style="background: #2196f3; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
-                        Save
-                    </button>
-                </div>
-                <p><small>Get this URL by deploying your Google Apps Script as a Web App. 
-                <a href="/google-test.html" target="_blank">Use the test page</a> to verify it works.</small></p>
-            </div>
-        `;
-        
-        // Insert after the form header
-        const formHeader = document.querySelector('.form-header');
-        if (formHeader) {
-            formHeader.after(configPrompt);
-        }
-    }
-
-    saveWebAppUrl() {
-        const input = document.getElementById('webAppUrlInput');
-        const url = input.value.trim();
-        
-        if (!url) {
-            alert('Please enter a valid URL');
-            return;
-        }
-        
-        if (!url.startsWith('https://script.google.com/macros/')) {
-            alert('Please enter a valid Google Apps Script Web App URL');
-            return;
-        }
-        
-        this.webAppUrl = url;
-        localStorage.setItem('assaWebAppUrl', url);
-        
-        // Remove configuration prompt
-        const configPrompt = document.querySelector('.config-prompt');
-        if (configPrompt) {
-            configPrompt.remove();
-        }
-        
-        this.showSuccess('Configuration saved! You can now submit registrations.');
+        console.log('ASSA Registration initialized with Google Apps Script backend');
     }
 
     setupEventListeners() {
@@ -216,12 +157,6 @@ class AssaRegistration {
         e.preventDefault();
         
         console.log('Form submitted');
-        
-        // Check if Web App URL is configured
-        if (!this.webAppUrl) {
-            this.showError('Please configure your Google Apps Script Web App URL first.');
-            return;
-        }
         
         // Hide previous messages
         this.hideMessages();
