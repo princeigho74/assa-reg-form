@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSA Registration - Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 5px solid;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 ASSA Registration Integration Test</h1>
+        <p>This page tests the integration with your Google Apps Script backend.</p>
+        
+        <div class="test-result info">
+            <strong>Your Google Apps Script URL:</strong><br>
+            <code>https://script.google.com/macros/s/AKfycbzKkFobH2pdt03Y5Ry74j5w82OtyArZZaoYhHu5l8tNQ2xHNm9FSySMNW-FRyzT0Ukx_g/exec</code>
+        </div>
+
+        <h3>🔍 Test Results</h3>
+        <div id="test-results"></div>
+
+        <h3>📤 Test Actions</h3>
+        <button onclick="testConnection()">Test Connection</button>
+        <button onclick="testValidRegistration()">Test Valid Registration</button>
+        <button onclick="testInvalidData()">Test Invalid Data</button>
+        <button onclick="testDuplicateEmail()">Test Duplicate Email</button>
+
+        <h3>📋 Test Sample Data</h3>
+        <pre id="sample-data"></pre>
+
+        <h3>🔗 Navigation</h3>
+        <a href="index.html" style="color: #007bff;">← Back to Registration Form</a>
+    </div>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzKkFobH2pdt03Y5Ry74j5w82OtyArZZaoYhHu5l8tNQ2xHNm9FSySMNW-FRyzT0Ukx_g/exec';
+        
+        // Sample test data
+        const validTestData = {
+            surname: 'TestUser',
+            firstName: 'Integration',
+            middleName: 'Test',
+            phoneNumber: '+2348012345678',
+            email: 'integration.test@example.com',
+            dateOfBirth: '1990-01-15',
+            graduationYear: '2006',
+            occupation: 'Software Tester',
+            homeAddress: '123 Test Street, Test City, Test State',
+            termsAccepted: true
+        };
+
+        function displaySampleData() {
+            document.getElementById('sample-data').textContent = JSON.stringify(validTestData, null, 2);
+        }
+
+        function showResult(type, title, message) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<strong>${title}</strong><br>${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function testConnection() {
+            showResult('info', '🔄 Testing Connection...', 'Attempting to connect to your Google Apps Script...');
+            
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: true })
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    showResult('success', '✅ Connection Successful', `Server responded with status ${response.status}`);
+                } else {
+                    showResult('error', '❌ Connection Failed', `Server returned status ${response.status}`);
+                }
+            } catch (error) {
+                showResult('error', '❌ Connection Error', `Error: ${error.message}`);
+            }
+        }
+
+        async function testValidRegistration() {
+            showResult('info', '🔄 Testing Valid Registration...', 'Sending valid test data...');
+            
+            // Use a unique email for each test
+            const testData = { 
+                ...validTestData, 
+                email: `test.${Date.now()}@example.com`,
+                firstName: 'ValidTest'
+            };
+            
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showResult('success', '✅ Valid Registration Test Passed', 
+                        `Registration successful! Member ID: ${result.data.memberId || 'Generated'}`);
+                } else {
+                    showResult('error', '❌ Valid Registration Test Failed', 
+                        `Error: ${result.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResult('error', '❌ Valid Registration Test Error', `Error: ${error.message}`);
+            }
+        }
+
+        async function testInvalidData() {
+            showResult('info', '🔄 Testing Invalid Data...', 'Sending data with wrong graduation year...');
+            
+            const invalidData = { 
+                ...validTestData, 
+                graduationYear: '2005',  // Wrong year
+                email: `invalid.test.${Date.now()}@example.com`,
+                firstName: 'InvalidTest'
+            };
+            
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(invalidData)
+                });
+
+                const result = await response.json();
+                
+                if (!result.success && result.message.includes('2006')) {
+                    showResult('success', '✅ Invalid Data Test Passed', 
+                        `Correctly rejected non-2006 graduation year: ${result.message}`);
+                } else if (result.success) {
+                    showResult('error', '❌ Invalid Data Test Failed', 
+                        'Script incorrectly accepted invalid graduation year!');
+                } else {
+                    showResult('error', '❌ Invalid Data Test Failed', 
+                        `Unexpected error: ${result.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResult('error', '❌ Invalid Data Test Error', `Error: ${error.message}`);
+            }
+        }
+
+        async function testDuplicateEmail() {
+            showResult('info', '🔄 Testing Duplicate Email...', 'Testing duplicate email detection...');
+            
+            const duplicateData = { 
+                ...validTestData, 
+                email: 'duplicate.test@example.com',  // Use same email
+                firstName: 'DuplicateTest'
+            };
+            
+            try {
+                // Send first registration
+                let response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duplicateData)
+                });
+
+                let result = await response.json();
+                
+                // Send second registration with same email
+                response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({...duplicateData, firstName: 'DuplicateTest2'})
+                });
+
+                result = await response.json();
+                
+                if (!result.success && result.message.toLowerCase().includes('already')) {
+                    showResult('success', '✅ Duplicate Email Test Passed', 
+                        `Correctly detected duplicate email: ${result.message}`);
+                } else if (result.success) {
+                    showResult('error', '❌ Duplicate Email Test Failed', 
+                        'Script incorrectly allowed duplicate email registration!');
+                } else {
+                    showResult('error', '❌ Duplicate Email Test Failed', 
+                        `Unexpected error: ${result.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResult('error', '❌ Duplicate Email Test Error', `Error: ${error.message}`);
+            }
+        }
+
+        // Initialize page
+        displaySampleData();
+    </script>
+</body>
+</html>
