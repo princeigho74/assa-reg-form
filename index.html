@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="description" content="Join the Afiesere Secondary School Old Students Association. Register now to connect with fellow alumni and stay updated with school activities.">
-    <meta name="keywords" content="ASSA, Afiesere Secondary School, Alumni, Registration, Old Students">
 </head>
 <body>
     <div class="container">
@@ -28,8 +26,12 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="form-container">
+                <div class="form-header">
+                    <h2>Join Our Alumni Network</h2>
+                    <p>Connect with fellow alumni and stay updated with school activities</p>
+                </div>
 
-                <!-- Success / Error Messages -->
+                <!-- Success Message -->
                 <div id="success-message" class="message success-message" style="display: none;">
                     <i class="fas fa-check-circle"></i>
                     <div>
@@ -38,6 +40,7 @@
                     </div>
                 </div>
 
+                <!-- Error Message -->
                 <div id="error-message" class="message error-message" style="display: none;">
                     <i class="fas fa-exclamation-circle"></i>
                     <div>
@@ -46,76 +49,48 @@
                     </div>
                 </div>
 
-                <!-- Form Header -->
-                <div class="form-header">
-                    <h2>Join Our Alumni Network</h2>
-                    <p>Connect with fellow alumni and stay updated with school activities</p>
-                </div>
-
                 <!-- Registration Form -->
                 <form id="registration-form" class="registration-form">
                     <div class="form-grid">
-
-                        <!-- Personal Info -->
+                        <!-- Personal Information -->
                         <div class="form-section">
                             <h3><i class="fas fa-user"></i> Personal Information</h3>
-                            
                             <div class="form-group">
                                 <label for="surname">Surname *</label>
                                 <input type="text" id="surname" name="surname" required maxlength="50" autocomplete="family-name">
                                 <span class="error-text"></span>
                             </div>
-
                             <div class="form-group">
                                 <label for="firstName">First Name *</label>
                                 <input type="text" id="firstName" name="firstName" required maxlength="50" autocomplete="given-name">
                                 <span class="error-text"></span>
                             </div>
-
                             <div class="form-group">
                                 <label for="middleName">Middle Name</label>
                                 <input type="text" id="middleName" name="middleName" maxlength="50" autocomplete="additional-name">
                                 <span class="error-text"></span>
                             </div>
-
                             <div class="form-group">
                                 <label for="dateOfBirth">Date of Birth *</label>
                                 <input type="date" id="dateOfBirth" name="dateOfBirth" required autocomplete="bday">
                                 <span class="error-text"></span>
                             </div>
-
-                            <!-- Photo Upload -->
-                            <div class="form-group file-upload-container">
-                                <label>Upload Your Photo</label>
-                                <div id="file-upload" class="file-upload-display">
-                                    <span class="file-upload-placeholder">Click or Drag & Drop to upload</span>
-                                    <input type="file" id="photo" name="photo" accept="image/*" style="display:none;">
-                                </div>
-                                <div class="file-upload-preview" id="photo-preview">
-                                    <img src="" alt="Preview" id="preview-img">
-                                    <button type="button" id="remove-photo">Remove</button>
-                                </div>
-                                <span class="error-text"></span>
-                            </div>
                         </div>
 
-                        <!-- Contact Info -->
+                        <!-- Contact Information -->
                         <div class="form-section">
                             <h3><i class="fas fa-address-book"></i> Contact Information</h3>
-                            
                             <div class="form-group">
                                 <label for="phoneNumber">Phone Number *</label>
                                 <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="08012345678 or +2348012345678" autocomplete="tel">
                                 <span class="help-text">Enter Nigerian mobile number (e.g., 08012345678)</span>
                                 <span class="error-text"></span>
                             </div>
-
                             <div class="form-group">
                                 <label for="email">Email Address *</label>
                                 <input type="email" id="email" name="email" required autocomplete="email">
                                 <span class="error-text"></span>
                             </div>
-
                             <div class="form-group">
                                 <label for="homeAddress">Home Address *</label>
                                 <textarea id="homeAddress" name="homeAddress" rows="3" required maxlength="200" placeholder="Enter your complete home address" autocomplete="street-address"></textarea>
@@ -123,10 +98,9 @@
                             </div>
                         </div>
 
-                        <!-- Academic & Professional Info -->
+                        <!-- Academic & Professional Information -->
                         <div class="form-section full-width">
                             <h3><i class="fas fa-briefcase"></i> Academic & Professional Information</h3>
-                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="graduationYear">Year of Graduation *</label>
@@ -137,16 +111,15 @@
                                     <span class="help-text">Only 2006 set members are eligible</span>
                                     <span class="error-text"></span>
                                 </div>
-
                                 <div class="form-group">
                                     <label for="occupation">Current Occupation *</label>
-                                    <input type="text" id="occupation" name="occupation" required maxlength="100" placeholder="e.g., Software Engineer, Teacher, Doctor" autocomplete="organization-title">
+                                    <input type="text" id="occupation" name="occupation" required maxlength="100" placeholder="e.g., Software Engineer" autocomplete="organization-title">
                                     <span class="error-text"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Terms -->
+                        <!-- Terms and Conditions -->
                         <div class="form-section full-width">
                             <h3><i class="fas fa-file-contract"></i> Terms and Conditions</h3>
                             <div class="form-group checkbox-group">
@@ -154,13 +127,12 @@
                                     <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
                                     <span class="checkmark"></span>
                                     <span class="checkbox-text">
-                                        I confirm that I am a member of the 2006 graduation set of Afiesere Secondary School and I am responsible for the accuracy of the information provided.
+                                        I confirm I am a member of the 2006 graduation set of Afiesere Secondary School and I am responsible for the accuracy of the information provided.
                                     </span>
                                 </label>
                                 <span class="error-text"></span>
                             </div>
                         </div>
-
                     </div>
 
                     <!-- Submit Button -->
@@ -173,7 +145,7 @@
                     </div>
                 </form>
 
-                <!-- Admin Links -->
+                <!-- Admin Link -->
                 <div class="admin-link">
                     <a href="/admin" target="_blank"><i class="fas fa-cog"></i> Admin Dashboard</a>
                     <span class="divider">|</span>
@@ -185,11 +157,6 @@
         <!-- Footer -->
         <footer class="footer">
             <p>&copy; 2025 Afiesere Secondary School Old Students Association. All rights reserved.</p>
-            <p class="footer-links">
-                <a href="#">Privacy Policy</a> | 
-                <a href="#">Terms of Service</a> | 
-                <a href="#">Contact Us</a>
-            </p>
         </footer>
     </div>
 
@@ -201,8 +168,8 @@
         </div>
     </div>
 
-    <!-- JS Script -->
-    <script src="script-google.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
 
